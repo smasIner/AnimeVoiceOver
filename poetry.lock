@@ -342,6 +342,7 @@ files = [
 ]
 
 [[package]]
+<<<<<<< HEAD
 name = "oauthlib"
 version = "3.2.2"
 description = "A generic, spec-compliant, thorough implementation of the OAuth request-signing logic"
@@ -358,6 +359,8 @@ signals = ["blinker (>=1.4.0)"]
 signedtoken = ["cryptography (>=3.0.0)", "pyjwt (>=2.0.0,<3)"]
 
 [[package]]
+=======
+>>>>>>> eb2b433a9b4149372b036b8db93349efbc2cbaad
 name = "packaging"
 version = "24.0"
 description = "Core utilities for Python packages"
@@ -622,6 +625,7 @@ pygments = ">=2.13.0,<3.0.0"
 jupyter = ["ipywidgets (>=7.5.1,<9)"]
 
 [[package]]
+<<<<<<< HEAD
 name = "rsa"
 version = "4.9"
 description = "Pure-Python RSA implementation"
@@ -636,6 +640,8 @@ files = [
 pyasn1 = ">=0.1.3"
 
 [[package]]
+=======
+>>>>>>> eb2b433a9b4149372b036b8db93349efbc2cbaad
 name = "stevedore"
 version = "5.2.0"
 description = "Manage dynamic plugins for Python applications"
