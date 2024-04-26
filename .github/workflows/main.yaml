@@ -1,0 +1,29 @@
+name: lab-security
+
+on: [push]
+
+jobs:
+  unittests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+        
+      - name: Setup poetry
+        run: pip install poetry
+
+      - name: Install poetry
+        run: poetry install
+
+      - name: Install pytest, bandit
+        run: poetry add pytest bandit
+
+      - name: Do bandit test
+        run: poetry run bandit -r ./app
+
+      - name: Do pytest
+        run: poetry run pytest test/tests.py
