@@ -6,6 +6,7 @@ load_dotenv()
 
 API_KEY = os.environ.get('SPREADSHEETS_API_KEY')
 
+
 def authenticate_sheets():
     return build('sheets', 'v4', developerKey=API_KEY).spreadsheets()
 
