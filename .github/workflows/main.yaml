@@ -20,10 +20,13 @@ jobs:
         run: poetry install
 
       - name: Install pytest, bandit
-        run: poetry add pytest bandit
+        run: poetry add pytest bandit flake8
 
       - name: Do bandit test
         run: poetry run bandit -r ./app
 
       - name: Do pytest
         run: poetry run pytest test/tests.py
+
+      - name: Do flake8
+        run: poetry run flake8 app/
