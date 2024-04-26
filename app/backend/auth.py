@@ -1,6 +1,7 @@
 import os
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
+import pandas
 
 load_dotenv()
 
@@ -51,12 +52,14 @@ def sheet_statistics(episode_id: int):
     return dictionary
 
 
-if __name__ == "__main__":
+def create_sheet():
+
+    sheet = {}
 
     for _ in SHEETS.keys():
         _i = sheet_statistics(_)
 
-    characters = {'characters': list(names)}
+    characters = {'characters': list(names) + ['']}
 
     episodes = {}
 
@@ -65,6 +68,10 @@ if __name__ == "__main__":
         ep = []
         dict = sheet_statistics(_)
 
+        total_recorded = 0
+        total_not_recorded = 0
+        total_cleaned_up = 0
+
         for character in names:
 
             try:
@@ -72,11 +79,42 @@ if __name__ == "__main__":
                 not_recorded = 0 if 'Not recorded' not in dict[character] else dict[character]['Not recorded']
                 cleaned_up = 0 if 'Cleaned up' not in dict[character] else dict[character]['Cleaned up']
 
+                total_recorded += recorded
+                total_not_recorded += not_recorded
+                total_cleaned_up += cleaned_up
+
                 ep.append(f'{recorded}/{cleaned_up}/{recorded + cleaned_up + not_recorded}')
 
             except KeyError:
                 ep.append(None)
 
+        ep.append(f'{total_recorded}/{total_cleaned_up}/{total_recorded + total_cleaned_up + total_not_recorded}')
         episodes[f'EP{_}'] = ep
 
-    print(episodes.keys())
+    total_episodes = []
+
+    for idx in range(len(names)):
+
+        total_rep = 0
+
+        for episode_id in episodes:
+            try:
+                total_rep += int(episodes[episode_id][idx].split('/')[2])
+            except AttributeError:
+                pass
+
+        total_episodes.append(total_rep)
+
+    total_episodes.append('')
+
+    links = [f'https://antifandom.com/you-zitsu/wiki/{name.replace(" ", "%20")}' for name in names] + ['']
+
+    sheet.update(characters)
+    sheet.update(episodes)
+    sheet.update({'total': total_episodes})
+    sheet.update({'role': links})
+
+    return pandas.DataFrame(sheet)
+
+
+print(create_sheet())
