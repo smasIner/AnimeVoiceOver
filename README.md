@@ -23,7 +23,7 @@ The stack of technologies that are used in the project:
   
 ### Areas of responsibility:
   * Egor Stroganov - core front-end
-  * Philipp Timofeev - core back-end
+  * Philipp Timofeev - core back-end, известный охотник на зомби
   * Murat Shaikhutdinov - testing and CI/CD, setting up poetry/github
   * Michail Panimash - documentation and performance analysis
   * Ilya Mirzazhanov - process organization, requirements building and presentation
