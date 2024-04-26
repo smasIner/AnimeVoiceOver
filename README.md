@@ -5,16 +5,22 @@ The stack of technologies that are used in the project:
   Streamlit for front-end
   Python 3.11 for back
   Pytest for Unit Tests
+
+  
 List of concrete quality requirements covering:
   a. Maintainability - we use wide-known frameworks and the stable version of Python.
   b. Reliability - we use different tests.
   c. Performanced - wide usage of asynchronous requests.
   d. Security - we use fuzzing and coverage is more than 60%.
+
+  
 Requirements:
   ● Poetry as an environment and module management
   ● Streamlit for the front
   ● GitHub for repo and CI
   ● Python 3.11
+
+  
 Areas of responsibility:
   Egor Stroganov - core front-end
   Philipp Timofeev - core back-end
