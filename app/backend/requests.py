@@ -1,5 +1,4 @@
 import pandas as pd
-import streamlit as st
 
 from .auth import authenticate_sheets
 
@@ -14,7 +13,10 @@ SHEETS = {
     8: '1bWcK3inHF32AGe2RV0Qwfepy-OLoWIakffVnaWBmV6M',
 }
 
+EPISODES_NUMBER = len(SHEETS.keys())
+
 google_sheets_api = authenticate_sheets()
+
 
 def get_anime_dataframe() -> pd.DataFrame:
 
@@ -51,14 +53,14 @@ def get_anime_dataframe() -> pd.DataFrame:
 
         table = {}
 
-        for _ in SHEETS.keys():
-            _i = sheet_statistics(_)
+        for key in SHEETS.keys():
+            sheet_statistics(key)
 
         characters = {'characters': list(names) + ['']}
 
         episodes = {}
 
-        for i in range(1, 9):
+        for i in range(1, EPISODES_NUMBER + 1):
 
             ep = []
             dict = sheet_statistics(i)
@@ -78,12 +80,16 @@ def get_anime_dataframe() -> pd.DataFrame:
                     total_not_recorded += not_recorded
                     total_cleaned_up += cleaned_up
 
-                    ep.append(f'{recorded}/{cleaned_up}/{recorded + cleaned_up + not_recorded}')
+                    stat = (recorded, cleaned_up, recorded + cleaned_up + not_recorded)
+                    ep.append(stat)
+                    # ep.append(f'{recorded}/{cleaned_up}/{recorded + cleaned_up + not_recorded}')
 
                 except KeyError:
                     ep.append(None)
 
-            ep.append(f'{total_recorded}/{total_cleaned_up}/{total_recorded + total_cleaned_up + total_not_recorded}')
+            total_stat = (total_recorded, total_cleaned_up, total_recorded + total_cleaned_up + total_not_recorded)
+            ep.append(total_stat)
+            # ep.append(f'{total_recorded}/{total_cleaned_up}/{total_recorded + total_cleaned_up + total_not_recorded}')
             episodes[f'EP{i}'] = ep
 
         total_episodes = []
@@ -94,13 +100,15 @@ def get_anime_dataframe() -> pd.DataFrame:
 
             for episode_id in episodes:
                 try:
-                    total_rep += int(episodes[episode_id][idx].split('/')[2])
+                    # total_rep += int(episodes[episode_id][idx].split('/')[2])
+                    if not (episodes[episode_id][idx] is None):
+                        total_rep += episodes[episode_id][idx][2]
                 except AttributeError:
                     pass
 
             total_episodes.append(total_rep)
 
-        total_episodes.append('')
+        total_episodes.append(sum(total_episodes))
 
         links = [f'https://antifandom.com/you-zitsu/wiki/{name.replace(" ", "%20")}' for name in names] + ['']
 
@@ -109,7 +117,10 @@ def get_anime_dataframe() -> pd.DataFrame:
         table.update({'total': total_episodes})
         table.update({'role': links})
 
-        return pd.DataFrame(table)
+        df = pd.DataFrame(table)
+        df = df.sort_values(by=['total'], ignore_index=True, ascending=[False])
+
+        return df
 
     return create_table()
 
