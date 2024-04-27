@@ -29,10 +29,7 @@ class TestRequests:
                 ['Character', 'Type', 'Status'],
                 ['Character 1', 'Main', 'Recorded'],
                 ['Character 2', 'Supporting', 'Not recorded'],
-                # Add more mock data as needed
             ]
         }
-
-        # Call the function and check the output
         dataframe = get_anime_dataframe()
         assert isinstance(dataframe, pd.DataFrame)
