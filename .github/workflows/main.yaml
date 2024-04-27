@@ -27,6 +27,8 @@ jobs:
 
       - name: Do pytest
         run: poetry run pytest test/tests.py
+	env:
+          SPREADSHEETS_API_KEY: ${{ secrets.SPREADSHEETS_API_KEY }}
 
       - name: Do flake8
         run: poetry run flake8 app/
