@@ -69,19 +69,22 @@ def get_anime_dataframe() -> pd.DataFrame:
 
                 try:
                     recorded = 0 if 'Recorded' not in dict[character] else dict[character]['Recorded']
-                    not_recorded = 0 if 'Not recorded' not in dict[character] else dict[character]['Not recorded']
+                    not_recorded = 0 if 'Not recorded' not in dict[
+                        character] else dict[character]['Not recorded']
                     cleaned_up = 0 if 'Cleaned up' not in dict[character] else dict[character]['Cleaned up']
 
                     total_recorded += recorded
                     total_not_recorded += not_recorded
                     total_cleaned_up += cleaned_up
 
-                    ep.append(f'{recorded}/{cleaned_up}/{recorded + cleaned_up + not_recorded}')
+                    ep.append(
+                        f'{recorded}/{cleaned_up}/{recorded + cleaned_up + not_recorded}')
 
                 except KeyError:
                     ep.append(None)
 
-            ep.append(f'{total_recorded}/{total_cleaned_up}/{total_recorded + total_cleaned_up + total_not_recorded}')
+            ep.append(
+                f'{total_recorded}/{total_cleaned_up}/{total_recorded + total_cleaned_up + total_not_recorded}')
             episodes[f'EP{i}'] = ep
 
         total_episodes = []
@@ -100,7 +103,8 @@ def get_anime_dataframe() -> pd.DataFrame:
 
         total_episodes.append('')
 
-        links = [f'https://antifandom.com/you-zitsu/wiki/{name.replace(" ", "%20")}' for name in names] + ['']
+        links = [
+            f'https://antifandom.com/you-zitsu/wiki/{name.replace(" ", "%20")}' for name in names] + ['']
 
         table.update(characters)
         table.update(episodes)

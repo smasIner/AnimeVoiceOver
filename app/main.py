@@ -29,10 +29,10 @@ with load_status:
     refresh_data()
 
     if SUC_LOAD_DATA:
-        #load_status.update(state="complete")
+        # load_status.update(state="complete")
         st.write('✅ The data has been uploaded successfully!')
     else:
-        #load_status.update(state="error")
+        # load_status.update(state="error")
         st.write('❌ An error occurred during fetching')
 
 if SUC_LOAD_DATA:
@@ -40,11 +40,12 @@ if SUC_LOAD_DATA:
         DATA,
         column_config={
             "characters": "Character",
-            "role": st.column_config.LinkColumn("Info"), 
+            "role": st.column_config.LinkColumn("Info"),
         }
-    )  
+    )
 else:
-    st.error(f"An error occurred during the execution of the request: {ERROR}\n\nTry refresh")
-    
+    st.error(
+        f"An error occurred during the execution of the request: {ERROR}\n\nTry refresh")
+
 if st.button("Refresh", type="primary"):
     refresh_data()
