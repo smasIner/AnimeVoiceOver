@@ -29,10 +29,10 @@ with load_status:
     refresh_data()
 
     if SUC_LOAD_DATA:
-        load_status.update(state="complete")
+        #load_status.update(state="complete")
         st.write('✅ The data has been uploaded successfully!')
     else:
-        load_status.update(state="error")
+        #load_status.update(state="error")
         st.write('❌ An error occurred during fetching')
 
 if SUC_LOAD_DATA:

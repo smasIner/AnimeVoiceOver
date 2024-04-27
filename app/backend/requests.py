@@ -1,5 +1,4 @@
 import pandas as pd
-import streamlit as st
 
 from .auth import authenticate_sheets
 
@@ -16,8 +15,8 @@ SHEETS = {
 
 google_sheets_api = authenticate_sheets()
 
-def get_anime_dataframe() -> pd.DataFrame:
 
+def get_anime_dataframe() -> pd.DataFrame:
     names = set()
 
     def sheet_statistics(episode_id: int):
@@ -28,7 +27,7 @@ def get_anime_dataframe() -> pd.DataFrame:
         ).execute()
 
         values = result.get('values', [])
-        
+
         dictionary = {}
 
         for line in values[1:]:
@@ -45,7 +44,6 @@ def get_anime_dataframe() -> pd.DataFrame:
                 dictionary[name][line[2]] = 1
 
         return dictionary
-
 
     def create_table():
 
@@ -112,4 +110,3 @@ def get_anime_dataframe() -> pd.DataFrame:
         return pd.DataFrame(table)
 
     return create_table()
-
