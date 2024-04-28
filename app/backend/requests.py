@@ -30,7 +30,7 @@ def get_anime_dataframe() -> pd.DataFrame:
         ).execute()
 
         values = result.get('values', [])
-        
+
         dictionary = {}
 
         for line in values[1:]:
@@ -47,7 +47,6 @@ def get_anime_dataframe() -> pd.DataFrame:
                 dictionary[name][line[2]] = 1
 
         return dictionary
-
 
     def create_table():
 
@@ -72,21 +71,29 @@ def get_anime_dataframe() -> pd.DataFrame:
             for character in names:
 
                 try:
-                    recorded = 0 if 'Recorded' not in dict[character] else dict[character]['Recorded']
-                    not_recorded = 0 if 'Not recorded' not in dict[character] else dict[character]['Not recorded']
-                    cleaned_up = 0 if 'Cleaned up' not in dict[character] else dict[character]['Cleaned up']
+                    recorded = 0 if 'Recorded' not in dict[character]\
+                        else dict[character]['Recorded']
+
+                    not_recorded = 0 if 'Not recorded' not in dict[character]\
+                        else dict[character]['Not recorded']
+
+                    cleaned_up = 0 if 'Cleaned up' not in dict[character]\
+                        else dict[character]['Cleaned up']
 
                     total_recorded += recorded
                     total_not_recorded += not_recorded
                     total_cleaned_up += cleaned_up
 
-                    stat = (recorded, cleaned_up, recorded + cleaned_up + not_recorded)
+                    stat = (recorded, cleaned_up, recorded +
+                            cleaned_up + not_recorded)
                     ep.append(stat)
 
                 except KeyError:
                     ep.append(None)
 
-            total_stat = (total_recorded, total_cleaned_up, total_recorded + total_cleaned_up + total_not_recorded)
+            total_stat = (total_recorded, total_cleaned_up,
+                          total_recorded + total_cleaned_up +
+                          total_not_recorded)
             ep.append(total_stat)
             episodes[f'EP{i}'] = ep
 
@@ -107,7 +114,8 @@ def get_anime_dataframe() -> pd.DataFrame:
 
         total_episodes.append(sum(total_episodes))
 
-        links = [f'https://antifandom.com/you-zitsu/wiki/{name.replace(" ", "%20")}' for name in names] + ['']
+        links = [f'https://antifandom.com/you-zitsu/wiki/\
+                 {name.replace(" ", "%20")}' for name in names] + ['']
 
         table.update(characters)
         table.update(episodes)
@@ -120,4 +128,3 @@ def get_anime_dataframe() -> pd.DataFrame:
         return df
 
     return create_table()
-

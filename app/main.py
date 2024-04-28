@@ -9,9 +9,10 @@ DATA: DataFrame = None
 SUC_LOAD_DATA: bool = False
 ERROR: HttpError = None
 
-recording_color = '#ffd966' 
+recording_color = '#ffd966'
 cleaning_up_color = '#a4c2f4'
 done_color = '#93c47d'
+
 
 def colorize_stats(stats: Tuple[int, int, int]) -> str:
     if stats is None:
@@ -21,13 +22,13 @@ def colorize_stats(stats: Tuple[int, int, int]) -> str:
 
     if (recordred == 0 or total == 0):
         return ''
-    
+
     if (cleaned_up == total):
         return f'background-color: {done_color}'
-    
+
     if (recordred == total):
         return f'background-color: {cleaning_up_color}'
-    
+
     return f'background-color: {recording_color}'
 
 
@@ -65,7 +66,7 @@ with load_status:
     st.write('🥶 Сalculating...')
 
     if DATA is None:
-        refresh_data() 
+        refresh_data()
 
     if SUC_LOAD_DATA:
         load_status.update(state="complete")
@@ -91,16 +92,16 @@ if SUC_LOAD_DATA:
             colorize_stats,
             subset=[f'EP{i}' for i in range(1, EPISODES_NUMBER + 1)]
         ),
-        height= int(35.2*(DATA.shape[0]+1)),
+        height=int(35.2*(DATA.shape[0]+1)),
         column_config={
             "characters": "Character",
             "role": st.column_config.LinkColumn("Info")
         }
-    )  
+    )
 else:
     st.error(f"An error occurred during the execution of the request: \
              {ERROR}\n\nTry refresh")
-    
+
 if st.button("Refresh", type="primary"):
     refresh_data()
 # </body>
