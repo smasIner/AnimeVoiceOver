@@ -3,15 +3,15 @@ from pandas.core.frame import DataFrame
 from googleapiclient.errors import HttpError
 from typing import Tuple
 
-from backend.requests import get_anime_dataframe
+from backend.requests import get_anime_dataframe, EPISODES_NUMBER
 
 DATA: DataFrame = None
 SUC_LOAD_DATA: bool = False
 ERROR: HttpError = None
 
-RECORDING_COLOR = '#ffd966' 
-CLEANING_UP_COLOR = '#a4c2f4'
-DONE_COLOR = '#93c47d'
+recording_color = '#ffd966' 
+cleaning_up_color = '#a4c2f4'
+done_color = '#93c47d'
 
 def colorize_stats(stats: Tuple[int, int, int]) -> str:
     if stats is None:
@@ -23,15 +23,15 @@ def colorize_stats(stats: Tuple[int, int, int]) -> str:
         return ''
     
     if (cleaned_up == total):
-        return f'background-color: {DONE_COLOR}'
+        return f'background-color: {done_color}'
     
     if (recordred == total):
-        return f'background-color: {CLEANING_UP_COLOR}'
+        return f'background-color: {cleaning_up_color}'
     
-    return f'background-color: {RECORDING_COLOR}'
+    return f'background-color: {recording_color}'
 
 
-def refresh_data():
+def refresh_data() -> None:
     global DATA, SUC_LOAD_DATA, ERROR
 
     try:
@@ -41,6 +41,7 @@ def refresh_data():
     except HttpError as e:
         SUC_LOAD_DATA = False
         ERROR = e
+
 
 # <head>
 st.set_page_config(
@@ -63,7 +64,8 @@ with load_status:
     st.write('🥸 Take data from Google sheets...')
     st.write('🥶 Сalculating...')
 
-    refresh_data()
+    if DATA is None:
+        refresh_data() 
 
     if SUC_LOAD_DATA:
         load_status.update(state="complete")
@@ -72,11 +74,22 @@ with load_status:
         load_status.update(state="error")
         st.write('❌ An error occurred during fetching')
 
+color_picker_columns = st.columns(3)
+
+recording_color = color_picker_columns[0]\
+    .color_picker('Pick a color for recording state', recording_color)
+
+cleaning_up_color = color_picker_columns[1]\
+    .color_picker('Pick a color for cleaning up state', cleaning_up_color)
+
+done_color = color_picker_columns[2]\
+    .color_picker('Pick a color for done state', done_color)
+
 if SUC_LOAD_DATA:
     st.dataframe(
         data=DATA.style.map(
             colorize_stats,
-            subset=[f'EP{i}' for i in range(1, 9)]
+            subset=[f'EP{i}' for i in range(1, EPISODES_NUMBER + 1)]
         ),
         height= int(35.2*(DATA.shape[0]+1)),
         column_config={
@@ -85,7 +98,8 @@ if SUC_LOAD_DATA:
         }
     )  
 else:
-    st.error(f"An error occurred during the execution of the request: {ERROR}\n\nTry refresh")
+    st.error(f"An error occurred during the execution of the request: \
+             {ERROR}\n\nTry refresh")
     
 if st.button("Refresh", type="primary"):
     refresh_data()

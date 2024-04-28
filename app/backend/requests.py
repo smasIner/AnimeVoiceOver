@@ -82,14 +82,12 @@ def get_anime_dataframe() -> pd.DataFrame:
 
                     stat = (recorded, cleaned_up, recorded + cleaned_up + not_recorded)
                     ep.append(stat)
-                    # ep.append(f'{recorded}/{cleaned_up}/{recorded + cleaned_up + not_recorded}')
 
                 except KeyError:
                     ep.append(None)
 
             total_stat = (total_recorded, total_cleaned_up, total_recorded + total_cleaned_up + total_not_recorded)
             ep.append(total_stat)
-            # ep.append(f'{total_recorded}/{total_cleaned_up}/{total_recorded + total_cleaned_up + total_not_recorded}')
             episodes[f'EP{i}'] = ep
 
         total_episodes = []
@@ -100,7 +98,6 @@ def get_anime_dataframe() -> pd.DataFrame:
 
             for episode_id in episodes:
                 try:
-                    # total_rep += int(episodes[episode_id][idx].split('/')[2])
                     if not (episodes[episode_id][idx] is None):
                         total_rep += episodes[episode_id][idx][2]
                 except AttributeError:
