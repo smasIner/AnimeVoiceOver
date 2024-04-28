@@ -19,11 +19,20 @@ google_sheets_api = authenticate_sheets()
 
 
 def get_anime_dataframe() -> pd.DataFrame:
+    '''
+    Returns the dataframe where the statistics
+    of voice acting by episode are collected.
+    '''
 
     names = set()
 
-    def sheet_statistics(episode_id: int):
+    def sheet_statistics(episode_id: int) -> dict:
+        '''
+        Returns statistics for the episode.
 
+        Args:
+            episode_id: int, number of episode
+        '''
         result = google_sheets_api.values().get(
             spreadsheetId=SHEETS[episode_id],
             range=f'EP{episode_id}!A:E',
@@ -48,8 +57,11 @@ def get_anime_dataframe() -> pd.DataFrame:
 
         return dictionary
 
-    def create_table():
-
+    def create_table() -> pd.DataFrame:
+        '''
+        Compiles a table with statistics for all episodes.
+        Returns the pandas Dataframe.
+        '''
         table = {}
 
         for key in SHEETS.keys():

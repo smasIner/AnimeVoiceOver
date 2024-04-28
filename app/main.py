@@ -15,6 +15,13 @@ done_color = '#93c47d'
 
 
 def colorize_stats(stats: Tuple[int, int, int]) -> str:
+    '''
+    Returns the background color of the cell depending on its data.
+
+    Args:
+        stats: Tuple[int, int, int], statistics for column
+        exmaple: (90, 3, 320)
+    '''
     if stats is None:
         return ''
 
@@ -33,6 +40,10 @@ def colorize_stats(stats: Tuple[int, int, int]) -> str:
 
 
 def refresh_data() -> None:
+    '''
+    Fetch data from Google Speadsheets.
+    Sets an error if data acquisition is unsuccessful.
+    '''
     global DATA, SUC_LOAD_DATA, ERROR
 
     try:
