@@ -1,7 +1,10 @@
+import os
 from googleapiclient.discovery import build
-import streamlit as st
+from dotenv import load_dotenv
 
-API_KEY = st.secrets["SPREADSHEETS_API_KEY"]
+load_dotenv()
+
+API_KEY = os.environ.get('SPREADSHEETS_API_KEY')
 
 
 def authenticate_sheets():
