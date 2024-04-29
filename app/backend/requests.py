@@ -13,14 +13,29 @@ SHEETS = {
     8: '1bWcK3inHF32AGe2RV0Qwfepy-OLoWIakffVnaWBmV6M',
 }
 
+EPISODES_NUMBER = len(SHEETS.keys())
+
 google_sheets_api = authenticate_sheets()
+
+
+
+def get_anime_dataframe() -> pd.DataFrame:
+    '''
+    Returns the dataframe where the statistics
+    of voice acting by episode are collected.
+    '''
 
 
 def get_anime_dataframe() -> pd.DataFrame:
     names = set()
 
-    def sheet_statistics(episode_id: int):
+    def sheet_statistics(episode_id: int) -> dict:
+        '''
+        Returns statistics for the episode.
 
+        Args:
+            episode_id: int, number of episode
+        '''
         result = google_sheets_api.values().get(
             spreadsheetId=SHEETS[episode_id],
             range=f'EP{episode_id}!A:E',
@@ -45,18 +60,24 @@ def get_anime_dataframe() -> pd.DataFrame:
 
         return dictionary
 
-    def create_table():
+
+      def create_table() -> pd.DataFrame:
+        '''
+        Compiles a table with statistics for all episodes.
+        Returns the pandas Dataframe.
+        '''
+
 
         table = {}
 
-        for _ in SHEETS.keys():
-            _i = sheet_statistics(_)
+        for key in SHEETS.keys():
+            sheet_statistics(key)
 
         characters = {'characters': list(names) + ['']}
 
         episodes = {}
 
-        for i in range(1, 9):
+        for i in range(1, EPISODES_NUMBER + 1):
 
             ep = []
             dict = sheet_statistics(i)
@@ -68,23 +89,36 @@ def get_anime_dataframe() -> pd.DataFrame:
             for character in names:
 
                 try:
-                    recorded = 0 if 'Recorded' not in dict[character] else dict[character]['Recorded']
-                    not_recorded = 0 if 'Not recorded' not in dict[
-                        character] else dict[character]['Not recorded']
-                    cleaned_up = 0 if 'Cleaned up' not in dict[character] else dict[character]['Cleaned up']
+
+                    recorded = 0 if 'Recorded' not in dict[character]\
+                        else dict[character]['Recorded']
+
+                    not_recorded = 0 if 'Not recorded' not in dict[character]\
+                        else dict[character]['Not recorded']
+
+                    cleaned_up = 0 if 'Cleaned up' not in dict[character]\
+                        else dict[character]['Cleaned up']
+
 
                     total_recorded += recorded
                     total_not_recorded += not_recorded
                     total_cleaned_up += cleaned_up
 
-                    ep.append(
-                        f'{recorded}/{cleaned_up}/{recorded + cleaned_up + not_recorded}')
+
+                    stat = (recorded, cleaned_up, recorded +
+                            cleaned_up + not_recorded)
+                    ep.append(stat)
+
 
                 except KeyError:
                     ep.append(None)
 
-            ep.append(
-                f'{total_recorded}/{total_cleaned_up}/{total_recorded + total_cleaned_up + total_not_recorded}')
+
+            total_stat = (total_recorded, total_cleaned_up,
+                          total_recorded + total_cleaned_up +
+                          total_not_recorded)
+            ep.append(total_stat)
+
             episodes[f'EP{i}'] = ep
 
         total_episodes = []
@@ -95,22 +129,30 @@ def get_anime_dataframe() -> pd.DataFrame:
 
             for episode_id in episodes:
                 try:
-                    total_rep += int(episodes[episode_id][idx].split('/')[2])
+                    if not (episodes[episode_id][idx] is None):
+                        total_rep += episodes[episode_id][idx][2]
                 except AttributeError:
                     pass
 
             total_episodes.append(total_rep)
 
-        total_episodes.append('')
+        total_episodes.append(sum(total_episodes))
 
-        links = [
-            f'https://antifandom.com/you-zitsu/wiki/{name.replace(" ", "%20")}' for name in names] + ['']
+
+        links = [f'https://antifandom.com/you-zitsu/wiki/\
+                 {name.replace(" ", "%20")}' for name in names] + ['']
+
 
         table.update(characters)
         table.update(episodes)
         table.update({'total': total_episodes})
         table.update({'role': links})
 
-        return pd.DataFrame(table)
+        df = pd.DataFrame(table)
+        df = df.sort_values(by=['total'], ignore_index=True, ascending=[False])
+
+
+        return df
+
 
     return create_table()
